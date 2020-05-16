@@ -1,0 +1,13 @@
+	ORG	0
+	CLR     C
+	MOV	R4, #0AAh
+	MOV	R6, #00h
+	
+LOOP:	MOV	A, R4
+	RLC	A
+	MOV	R4, A
+	CLR	A
+	ADDC	A, R6
+	MOV	R6, A
+	CJNE    R4, #00h, LOOP
+	END
