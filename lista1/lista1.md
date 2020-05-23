@@ -2,7 +2,7 @@
 
 #### SEL433 - Aplicação de Microprocessadores I
 
-**1. ** Para o Microcontrolador da família MCS-51, responder aos itens abaixo de maneira
+**1.** Para o Microcontrolador da família MCS-51, responder aos itens abaixo de maneira
 objetiva:
 
 **1. a)** Como acessar um dado armazenado na posição 1010h da RAM externa e copiar este
@@ -14,7 +14,7 @@ MOVX A, @DPTR    ;Copia o conteúdo contido no endereço em que o DPTR aponta pa
 MOV R7, A        ;Copia o conteúdo do acumulador para R7
 ```
 
-**1. b) **Quais os pinos da CPU do microcontrolador 8051 são utilizados para a operação do
+**1. b)** Quais os pinos da CPU do microcontrolador 8051 são utilizados para a operação do
 item anterior, e qual a função de cada um?
 
 **1. c)** Se não for utilizada a memória de programa externa qual deve ser o nível lógico do
@@ -57,29 +57,29 @@ a 210FH para a região de memória de dados externa que inicia em 2300H.
 		ORG	0	
 ;*****************************************************************************************
 ;primeiro é copiado da RAM externa para a área de rascunho
-		MOV	R0, #50h       ;utiliza a região a partir de 50h da RAM interna pra rascunho
-		MOV	DPTR, #2100h   ;endereço inicial da RAM externa em que será copiado o conteúdo
+        MOV	R0, #50h       ;utiliza a região a partir de 50h da RAM interna pra rascunho
+        MOV	DPTR, #2100h   ;endereço inicial da RAM externa em que será copiado o conteúdo
 LOOP:	MOVX	A, @DPTR   ;carrega A com um byte da RAM externa
-		MOV	@R0, A         ;copia A para o endereço da área de rascunho
-		INC	R0    
-		INC	DPTR           
-		CJNE	R0, #60h, LOOP ; 210Fh - 2100h = 0Fh, quebra o loop quando R0=50h+0Fh+1h
+        MOV	@R0, A         ;copia A para o endereço da área de rascunho
+        INC	R0    
+        INC	DPTR           
+        CJNE	R0, #60h, LOOP ; 210Fh - 2100h = 0Fh, quebra o loop quando R0=50h+0Fh+1h
 
 ;*****************************************************************************************
 ;agora é copiado da área de rascunho para a região da RAM externa desejada
-		MOV	R0, #50h
-		MOV	DPTR, #2300h
+        MOV	R0, #50h
+        MOV	DPTR, #2300h
 LOOP2:	MOV	A, @R0
-		MOVX	@DPTR, A
-		INC	R0
-		INC	DPTR
-		CJNE	R0, #60h, LOOP2
-		END
+        MOVX	@DPTR, A
+        INC	R0
+        INC	DPTR
+        CJNE	R0, #60h, LOOP2
+        END
 ```
 
 ---
 
-**4. **Fazer um programa que copie os dados da área de memória de programa que devem
+**4.** Fazer um programa que copie os dados da área de memória de programa que devem
 estar armazenados a partir do endereço "TAB:" para a memória interna de dados a partir
 do endereço 30H. A seqüência de dados na memória de programa deve ser finalizada
 com o código 00. O programa deve contar o número de dados da seqüência, menos o
