@@ -1,0 +1,13 @@
+	ORG	0
+	MOV	R0, #00h
+	MOV	20h, #0Ah
+	MOV	A, 20h
+LOOP:	RLC	A
+	MOV	B, A
+	MOV	A, 2Fh
+	RRC	A
+	MOV	2Fh, A
+	MOV     A, B
+	INC	R0
+	CJNE	R0, #08h, LOOP
+	END	0

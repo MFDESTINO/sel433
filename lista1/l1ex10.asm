@@ -1,0 +1,19 @@
+	ORG	0
+	MOV P0, #00h
+	SJMP	Prog
+	ORG	001Bh
+Sub1:	CLR	EA
+	INC	P0
+	SETB	EA
+	MOV	TH1, #0FDh
+	MOV	TL1, #090h
+	RETI
+
+PROG:	SETB	ET1		;habilita interrupcao de T1
+	MOV	TMOD, #10h
+	MOV	TH1, #0FDh
+	MOV	TL1, #090h
+	SETB	EA
+	SETB	TR1
+LOOP:	SJMP	LOOP
+	END

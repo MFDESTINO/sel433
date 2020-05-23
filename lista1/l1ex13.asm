@@ -1,0 +1,36 @@
+        ORG 0
+        SJMP prog
+        
+	ORG	0003h
+	SJMP ext0
+	
+	ORG	0013h
+	SJMP ext1
+	
+	ORG	001Bh
+	SJMP tm_1
+	
+tm_1:	MOV	A, P2
+	MOV	DPTR, #4000h
+	MOVX	@DPTR, A
+	RETI
+
+	
+ext1:	MOV	DPTR, #4200h
+	MOVX	A, @DPTR
+	MOV	P1, A
+	RETI
+
+	
+ext0:	MOV	DPTR, #4000h
+	MOVX	A, @DPTR
+	MOV	DPTR, #4200h
+	MOVX	@DPTR, A
+	RETI
+
+prog:	MOV  IP, #0000101b
+	SETB EX0
+	SETB EX1
+	SETB ET1
+	SETB EA
+	END
