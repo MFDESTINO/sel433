@@ -30,9 +30,7 @@ MOV destino, #8Bh   ;trocar destino pelo endereço desejado da RAM interna
 
 ---
 
-**2.** Fazer um programa que escreva os números de 1 a 15H na memória interna de dados a
-partir do endereço 50H e na memória externa de dados a partir do endereço 2200H. Utilize
-modo de endereçamento indireto para escrita nas duas regiões de memória.
+**2.** Fazer um programa que escreva os números de 1 a 15H na memória interna de dados a partir do endereço 50H e na memória externa de dados a partir do endereço 2200H. Utilize modo de endereçamento indireto para escrita nas duas regiões de memória.
 
 ```assembly
         ORG	0
@@ -51,8 +49,7 @@ LOOP1:	INC	A                   ;incrementa A
 
 ---
 
-**3.** Fazer um programa que copie os dados da região de memória de dados externa de 2100H
-a 210FH para a região de memória de dados externa que inicia em 2300H.
+**3.** Fazer um programa que copie os dados da região de memória de dados externa de 2100H a 210FH para a região de memória de dados externa que inicia em 2300H.
 
 ```assembly
         ORG	0	
@@ -80,11 +77,7 @@ LOOP2:	MOV	A, @R0
 
 ---
 
-**4.** Fazer um programa que copie os dados da área de memória de programa que devem
-estar armazenados a partir do endereço "TAB:" para a memória interna de dados a partir
-do endereço 30H. A seqüência de dados na memória de programa deve ser finalizada
-com o código 00. O programa deve contar o número de dados da seqüência, menos o
-último valor = 00, e armazenar o resultado no endereço 20h da RAM interna.
+**4.** Fazer um programa que copie os dados da área de memória de programa que devem estar armazenados a partir do endereço "TAB:" para a memória interna de dados a partir do endereço 30H. A seqüência de dados na memória de programa deve ser finalizada com o código 00. O programa deve contar o número de dados da seqüência, menos o último valor = 00, e armazenar o resultado no endereço 20h da RAM interna.
 
 ```assembly
         ORG	0
@@ -108,6 +101,92 @@ LOOP:	CLR	A
 FIM:	SJMP    FIM
 TAB:	DB      1Ah, 2Ah, 23h, 12h, 00h ;dados aleatórios para testar
 ```
+---
 
+**5.** Escrever um programa que copie dados armazenados na RAM externa, com início na posição 8200H para a posição 8300H. A seqüência de dados deve ser finalizada com ocódigo 00. O programa deve contar o número de dados da seqüência, menos o último
+valor = 00, e armazenar o resultado no endereço 40h da RAM interna.
 
+```assembly
+        ORG        0
+        MOV        R0, #50h        ;início da área de rascunho na RAM interna
+        MOV        R1, #00h        ;registrador para a contagem
+        MOV        DPTR, #8200h    ;endereço inicial para cópia
+LOOP:   MOVX       A, @DPTR
+        MOV        @R0, A          ;copia para a área de rascunho
+        INC        R0
+        INC        DPTR
+        INC        R1              ;incrementa a contagem
+        CJNE       A, #00h, LOOP   ;se o dado for zero, interrompe o loop
+        
+        MOV        R0, #50h
+        MOV        DPTR, #8300h    ;endereço de destino da cópia
+LOOP2:  MOV        A, @R0
+        MOVX       @DPTR, A
+        INC        R0
+        INC        DPTR
+        CJNE       A, #00h, LOOP2  ;se o dado for zero, interrompe o loop
+        DEC        R1              ;decrementa a contagem pois contou o dado 00h
+        MOV        40h, R1
+        END
+```
+---
+**6.** Escrever um programa que faça a soma de dois números de 24 bits (3 bytes) cada um. O primeiro número está armazenado nas posições (R0+2)=MSB, (R0+1), (R0)=LSB da RAM externa. O segundo número está nas posições (R1+2)=MSB, (R1+1), (R1)=LSB. O resultado deve ser colocado nas posições 42h=MSB, 41h e 40h=LSB da RAM interna.
+
+```assembly
+ORG     0
+CLR     C
+MOV     R0, #10h   ;endereço de teste
+MOV     R1, #20h   ;endereço de teste
+MOVX    A, @R0     ;carrega A com o dado para onde R0 aponta da RAM externa
+MOV     R2, A      ;deixa o dado em R2 provisoriamente
+MOVX    A, @R1     ;carrega A com o dado para onde R1 aponta da RAM externa
+ADD     A, R2      ;soma os dados de R0 e R1
+MOV     40h, A     ;copia o resultado para 40h
+
+INC     R0         ;faz o endereço de R0 ser R0+1
+INC     R1         ;faz o endereço de R1 ser R1+1
+MOVX    A, @R0
+MOV     R2, A
+MOVX    A, @R1
+ADDC    A, R2      ;a soma agora considera o resultado do carry da soma anterior
+MOV     41h, A
+
+INC     R0         ;faz o endereço de R0 ser R0+2
+INC     R1         ;faz o endereço de R1 ser R1+2
+MOVX    A, @R0  
+MOV     R2, A
+MOVX    A, @R1
+ADDC    A, R2
+MOV     42h, A
+END
+```
+---
+**7.** Fazer um programa que armazene em ordem crescente, na RAM externa a partir do
+endereço 1000h, os elementos de uma tabela de bytes armazenada na Memória de
+Programa e terminada com o byte 00 (zero).
+
+```assembly
+        ORG        0
+        MOV        R0, #30h
+        MOV        DPTR, #TAB
+        
+LOOP1:  CLR        A
+        MOVC       A, @A+DPTR
+        MOV        @R0, A
+        INC        DPTR
+        INC        R0
+        CJNE       A, #00h, LOOP1
+        
+        MOV        R0, #30h
+        MOV        DPTR, #1000h
+        
+LOOP2:  MOV        A, @R0
+        MOVX       @DPTR, A
+        INC        R0
+        INC        DPTR
+        CJNE       A, #00h, LOOP2
+        
+FIM:    SJMP       FIM
+TAB:    DB         1Ah, 2Ah, 23h, 12h, 00h
+```
 
